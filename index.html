@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Todo List App</title>
+        <!-- Meta Tags -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Links -->
+        <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
+        <link href="https://unpkg.com/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+        <link rel="stylesheet" href="css/main.css" />
+    </head>
+    <body>
+        <!-- Main Header -->
+        <header>
+            <h1>Todo List App</h1>
+            <p>This app was developed by Mehdi Neysi using HTML5, CSS3 and JavaScript.</p>
+        </header>
+        <!-- End Main Header -->
+
+        <div class="container">
+            <!-- Add Task -->
+            <div id="add-task">
+                <input id="add-task-input" type="text" placeholder="write your task here..." />
+            </div>
+            <!-- End Add Task -->
+
+            <!-- Buttons -->
+            <div id="buttons">
+                <button onclick="clearCompleteTasks()" class="mr-1">Clear complete tasks</button>
+                <button onclick="clearAllTasks()">Clear all tasks</button>
+            </div>
+            <!-- End Buttons -->
+
+            <!-- Tasks List -->
+            <ul id="tasks-list"></ul>
+            <!-- End Tasks List -->
+        </div>
+
+        <!-- GitHub Button -->
+        <a href="https://github.com" target="_blank" class="github flex items-center justify-center">
+            <i class="bx bxl-github"></i>
+        </a>
+        <!-- End GitHub Button -->
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </body>
+</html>
