@@ -1,5 +1,5 @@
 # Preview
-![Todo List Preview](https://i.ibb.co/5WZXgSB/todo-list.png)
+![Todo List Preview](https://i.ibb.co/1dZT2B8/todo-list.png)
 # Features
  - [x] Show tasks list
  - [x] Add new task
