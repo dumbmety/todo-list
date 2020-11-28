@@ -16,6 +16,6 @@
  - [ ] Animation on complete and delete
  - [ ] Responsivity
 # Contact US
- - Email: [mehdineysi@outlook.com](mailto:neysimehdi@outlook.com)
+ - Email: [mehdineysi@outlook.com](mailto:mehdineysi@outlook.com)
  - Instagram: [@neysi.dev](https://instagram.com/neysi.dev)
  - Twitter: [@dev_mehdineysi](https://twitter.com/dev_mehdineysi)
