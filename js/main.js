@@ -1,199 +1,248 @@
 // Elements
-const tasksList = document.getElementById('tasks-list')
-const addTaskInput = document.getElementById('add-task-input')
+const tasksList = document.querySelector('#tasks-list');
+const addTaskInput = document.querySelector('#add-task-input');
 
 // Total List Of Tasks
-let list = JSON.parse(localStorage.getItem('tasks')) || []
+let list = JSON.parse(localStorage.getItem('tasks')) || [];
 
 // Show All Tasks From Local Storage In Page
 function showTasksList() {
-    tasksList.innerHTML = ''
-    // Reverse Sort List
-    const list = JSON.parse(localStorage.getItem('tasks')).reverse()
+	tasksList.innerHTML = '';
+	// Reverse Sort List
+	const list = JSON.parse(localStorage.getItem('tasks')).reverse();
 
-    if (list.length > 0) {
-        for (const task of list) {
-            // <li> tag
-            const li = document.createElement('li')
-            li.classList.add('flex')
+	if (list.length > 0) {
+		for (const task of list) {
+			// <li> tag
+			const li = document.createElement('li');
+			li.classList.add('ui', 'segment', 'grid', 'equal', 'width');
 
-            // <span> tag
-            const span = document.createElement('span')
-            span.setAttribute('onclick', `completeTask(${task.id})`)
+			// Checkbox and Text
+			const div1 = document.createElement('div');
+			div1.classList.add('ui', 'checkbox', 'column');
+			const input = document.createElement('input');
+			input.type = 'checkbox';
+			input.checked = task.completed;
+			div1.appendChild(input);
+			const label = document.createElement('label');
+			label.textContent = task.text;
+			div1.appendChild(label);
+			li.appendChild(div1);
 
-            // <i> tag
-            const i = document.createElement('i')
-            if (task.completed === true) {
-                li.appendChild(span)
-                span.classList.add('completed')
-                span.appendChild(i)
-                i.classList.add('bx', 'bx-check')
-            } else li.appendChild(span)
+			// Action Buttons
+			const div2 = document.createElement('div');
+			div2.classList.add('column');
 
-            // Check If Completed
-            if (task.completed === true) {
-                const del = document.createElement('del')
-                del.textContent = task.text
-                li.appendChild(del)
-            } else {
-                const div = document.createElement('div')
-                div.classList.add('task')
-                div.textContent = task.text
-                li.appendChild(div)
-            }
+			// Edit Button
+			const edit = document.createElement('i');
+			edit.classList.add('edit', 'outline', 'icon');
+			edit.setAttribute('onclick', `showEditModal(${task.id})`);
+			div2.appendChild(edit);
 
-            // Edit Button
-            const edit = document.createElement('i')
-            edit.setAttribute('onclick', `editTask(${task.id})`)
-            edit.classList.add('edit', 'bx', 'bxs-edit')
-            li.appendChild(edit)
+			// Remove Button
+			const remove = document.createElement('i');
+			remove.classList.add(
+				'trash',
+				'alternate',
+				'outline',
+				'remove',
+				'icon'
+			);
+			remove.setAttribute('onclick', `showRemoveModal(${task.id})`);
+			div2.appendChild(remove);
+			li.appendChild(div2);
 
-            // Remove Button
-            const remove = document.createElement('i')
-            remove.setAttribute('onclick', `removeTask(${task.id})`)
-            remove.classList.add('remove', 'bx', 'bx-trash-alt')
-            li.appendChild(remove)
+			// Append Child <li>
+			return tasksList.appendChild(li);
+		}
+	}
 
-            // Append Child <li>
-            tasksList.appendChild(li)
-        }
-    } else {
-        const div = document.createElement('div')
-        div.classList.add('alert', 'alert-warning')
-        div.innerHTML = 'You have nothing task today!<br />Enter your tasks today above'
-        tasksList.appendChild(div)
-    }
+	const message = document.createElement('div');
+	message.classList.add('ui', 'icon', 'warning', 'message');
+	const icon = document.createElement('i');
+	icon.classList.add('inbox', 'icon');
+	message.appendChild(icon);
+	const content = document.createElement('div');
+	content.classList.add('content');
+	const header = document.createElement('div');
+	header.classList.add('header');
+	header.textContent = 'You have nothing task today!';
+	content.appendChild(header);
+	content.append('Enter your tasks today above.');
+	message.appendChild(content);
+	tasksList.style.border = 'none';
+	tasksList.appendChild(message);
 }
 
 // Add New Task To Local Storage
 function addTask(event) {
-    if (event.keyCode == 13) {
-        list.push({
-            id: list.length + 1,
-            text: event.target.value,
-            completed: false
-        })
+	if (tasksList.style.border == 'none') {
+		tasksList.style.border = '1px solid rgba(34,36,38,.15)';
+	}
 
-        localStorage.setItem('tasks', JSON.stringify(list))
+	if (event.keyCode == 13) {
+		list.push({
+			id: list.length + 1,
+			text: event.target.value,
+			completed: false
+		});
 
-        Toastify({
-            text: 'New task added',
-            duration: 3000,
-            close: true,
-            gravity: 'bottom',
-            position: 'left',
-            backgroundColor: 'linear-gradient(to right, #525879, #181f47)',
-            stopOnFocus: true
-        }).showToast()
+		localStorage.setItem('tasks', JSON.stringify(list));
 
-        event.target.value = ''
-        showTasksList()
-    }
+		new Noty({
+			text: '<i class="check icon"></i> Task was successfully added.',
+			layout: 'bottomRight',
+			timeout: 2000,
+			progressBar: true,
+			closeWith: ['click'],
+			theme: 'metroui'
+		}).show();
+
+		event.target.value = '';
+		showTasksList();
+	}
 }
 
 // Change Complete State
 function completeTask(id) {
-    // Get Task
-    const taskIndex = list.findIndex(t => t.id == id)
-    const task = list[taskIndex]
+	// Get Task
+	const taskIndex = list.findIndex(t => t.id == id);
+	const task = list[taskIndex];
 
-    // Change State
-    task.completed ? (task.completed = false) : (task.completed = true)
-    list[taskIndex] = task
+	// Change State
+	task.completed = !task.completed;
+	list[taskIndex] = task;
 
-    // Save Changes
-    localStorage.setItem('tasks', JSON.stringify(list))
-    showTasksList()
+	// Save Changes
+	localStorage.setItem('tasks', JSON.stringify(list));
+	showTasksList();
 }
 
 // Remove Task
 function removeTask(id) {
-    // Change State
-    list = list.filter(t => t.id !== id)
-    localStorage.setItem('tasks', JSON.stringify(list))
+	// Change State
+	list = list.filter(t => t.id !== id);
+	localStorage.setItem('tasks', JSON.stringify(list));
 
-    // Show Alert And Render List
-    Toastify({
-        text: 'Task removed',
-        duration: 3000,
-        close: true,
-        gravity: 'bottom',
-        position: 'left',
-        backgroundColor: 'linear-gradient(to right, #e45757, #d44747)',
-        stopOnFocus: true
-    }).showToast()
-    showTasksList()
+	// Show Alert And Render List
+	new Noty({
+		text: '<i class="trash icon"></i> Task was successfully deleted.',
+		type: 'error',
+		layout: 'bottomRight',
+		timeout: 2000,
+		progressBar: true,
+		closeWith: ['click'],
+		theme: 'metroui'
+	}).show();
+	showTasksList();
 }
 
 // Edit Task
 function editTask(id) {
-    // Get Task
-    const taskEdited = prompt('Edit your task here...')
-    if (taskEdited == '' || taskEdited == null) return
-    const taskIndex = list.findIndex(t => t.id == id)
+	const taskText = document.querySelector('#task-text').value;
 
-    // Change State And Save Changes
-    list[taskIndex].text = taskEdited
-    localStorage.setItem('tasks', JSON.stringify(list))
+	// Get Task
+	if (taskText == '' || taskText == null) return;
+	const taskIndex = list.findIndex(t => t.id == id);
 
-    // Show Alert And Then Render List
-    Toastify({
-        text: 'Task edited',
-        duration: 3000,
-        close: true,
-        gravity: 'bottom',
-        position: 'left',
-        backgroundColor: 'linear-gradient(to right, #47d453, #35ac3f)',
-        stopOnFocus: true
-    }).showToast()
-    showTasksList()
+	// Change State And Save Changes
+	list[taskIndex].text = taskText;
+	localStorage.setItem('tasks', JSON.stringify(list));
+
+	// Show Alert And Then Render List
+	new Noty({
+		text: '<i class="edit icon"></i> Task was successfully updated.',
+		layout: 'bottomRight',
+		timeout: 2000,
+		progressBar: true,
+		closeWith: ['click'],
+		theme: 'metroui'
+	}).show();
+	showTasksList();
 }
 
 // Clear All Tasks
 function clearAllTasks() {
-    if (list.length > 0) {
-        if (confirm('Are you sure?')) {
-            list = []
-            localStorage.setItem('tasks', JSON.stringify(list))
+	if (list.length > 0) {
+		list = [];
+		localStorage.setItem('tasks', JSON.stringify(list));
+		return showTasksList();
+	}
 
-            showTasksList()
-        }
-    } else {
-        Toastify({
-            text: 'There is no task to remove',
-            duration: 3000,
-            close: true,
-            gravity: 'bottom',
-            position: 'left',
-            backgroundColor: 'linear-gradient(to right, #e45757, #d44747)',
-            stopOnFocus: true
-        }).showToast()
-    }
+	new Noty({
+		type: 'error',
+		text: '<i class="close icon"></i> There is no task to remove.',
+		layout: 'bottomRight',
+		timeout: 2000,
+		progressBar: true,
+		closeWith: ['click'],
+		theme: 'metroui'
+	}).show();
 }
 
 // Clear Complete Tasks
 function clearCompleteTasks() {
-    if (list.length > 0) {
-        if (confirm('Are you sure?')) {
-            const filteredTasks = list.filter(t => t.completed !== true)
-            localStorage.setItem('tasks', JSON.stringify(filteredTasks))
-            showTasksList()
-        }
-    } else {
-        Toastify({
-            text: 'There is no task to remove',
-            duration: 3000,
-            close: true,
-            gravity: 'bottom',
-            position: 'left',
-            backgroundColor: 'linear-gradient(to right, #e45757, #d44747)',
-            stopOnFocus: true
-        }).showToast()
-    }
+	if (list.length > 0) {
+		if (confirm('Are you sure?')) {
+			const filteredTasks = list.filter(t => t.completed !== true);
+			localStorage.setItem('tasks', JSON.stringify(filteredTasks));
+			return showTasksList();
+		}
+	}
+
+	Toastify({
+		text: 'There is no task to remove',
+		duration: 3000,
+		close: true,
+		gravity: 'bottom',
+		position: 'left',
+		backgroundColor: 'linear-gradient(to right, #e45757, #d44747)',
+		stopOnFocus: true
+	}).showToast();
+}
+
+// Show Edit Modal And Pass Data
+function showEditModal(id) {
+	const taskIndex = list.findIndex(t => t.id == id);
+	const { text } = list[taskIndex];
+
+	document.querySelector('#edit-modal .content #task-id').value = id;
+	document.querySelector('#edit-modal .content #task-text').value = text;
+	document
+		.querySelector('#update-button')
+		.setAttribute('onclick', `editTask(${id})`);
+
+	$('#edit-modal.modal').modal('show');
+}
+
+// Show Remove Modal
+function showRemoveModal(id) {
+	document
+		.querySelector('#remove-button')
+		.setAttribute('onclick', `removeTask(${id})`);
+
+	$('#remove-modal.modal').modal('show');
+}
+
+// Show Clear All Tasks Modal
+function showClearAllTasksModal() {
+	if (list.length > 0) {
+		return $('#clear-all-tasks-modal.modal').modal('show');
+	}
+
+	new Noty({
+		type: 'error',
+		text: '<i class="close icon"></i> There is no task to remove.',
+		layout: 'bottomRight',
+		timeout: 2000,
+		progressBar: true,
+		closeWith: ['click'],
+		theme: 'metroui'
+	}).show();
 }
 
 // Event Listeners
-addTaskInput.addEventListener('keypress', addTask)
-window.addEventListener('load', () => addTaskInput.focus())
+addTaskInput.addEventListener('keypress', addTask);
+window.addEventListener('load', () => addTaskInput.focus());
 
-showTasksList()
+showTasksList();
