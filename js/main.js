@@ -53,25 +53,25 @@ function showTasksList() {
 			li.appendChild(div2);
 
 			// Append Child <li>
-			return tasksList.appendChild(li);
+			tasksList.appendChild(li);
 		}
+	} else {
+		const message = document.createElement('div');
+		message.classList.add('ui', 'icon', 'warning', 'message');
+		const icon = document.createElement('i');
+		icon.classList.add('inbox', 'icon');
+		message.appendChild(icon);
+		const content = document.createElement('div');
+		content.classList.add('content');
+		const header = document.createElement('div');
+		header.classList.add('header');
+		header.textContent = 'You have nothing task today!';
+		content.appendChild(header);
+		content.append('Enter your tasks today above.');
+		message.appendChild(content);
+		tasksList.style.border = 'none';
+		tasksList.appendChild(message);
 	}
-
-	const message = document.createElement('div');
-	message.classList.add('ui', 'icon', 'warning', 'message');
-	const icon = document.createElement('i');
-	icon.classList.add('inbox', 'icon');
-	message.appendChild(icon);
-	const content = document.createElement('div');
-	content.classList.add('content');
-	const header = document.createElement('div');
-	header.classList.add('header');
-	header.textContent = 'You have nothing task today!';
-	content.appendChild(header);
-	content.append('Enter your tasks today above.');
-	message.appendChild(content);
-	tasksList.style.border = 'none';
-	tasksList.appendChild(message);
 }
 
 // Add New Task To Local Storage
