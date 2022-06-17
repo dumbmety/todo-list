@@ -1,6 +1,8 @@
 // Elements
 const tasksList = document.querySelector("#tasks-list")
+const addTaskForm = document.querySelector("form#add-task")
 const addTaskInput = document.querySelector("#add-task-input")
+const clearAllTasksBtn = document.querySelector("button#clear-all-tasks")
 
 // Total List Of Tasks
 let list = JSON.parse(localStorage.getItem("tasks")) || []
@@ -10,9 +12,11 @@ let list = JSON.parse(localStorage.getItem("tasks")) || []
  */
 function showTasksList() {
   tasksList.innerHTML = ""
-  const list = JSON.parse(localStorage.getItem("tasks"))
+  const list = JSON.parse(localStorage.getItem("tasks")) || []
 
-  if (!Array.isArray(list) || list?.length === 0) {
+  if (list.length === 0) {
+    clearAllTasksBtn.disabled = true
+
     const element = String.raw`
 			<div class="ui icon warning message">
 				<i class="inbox icon"></i>
@@ -27,6 +31,7 @@ function showTasksList() {
     return tasksList.insertAdjacentHTML("beforeend", element)
   }
 
+  clearAllTasksBtn.disabled = false
   tasksList.style.border = "1px solid rgba(34,36,38,.15)"
   list.reverse().forEach(task => {
     const element = String.raw`
@@ -36,41 +41,51 @@ function showTasksList() {
 						<label>${task.text}</label>
 					</div>
 					<div class="column">
-						<i class="edit outline icon" onclick="showEditModal(${task.id})"></i>
-						<i class="trash alternate outline remove icon" onclick="showRemoveModal(${
-              task.id
-            })"></i>
+						<i data-id="${task.id}" class="edit outline icon"></i>
+						<i data-id="${task.id}" class="trash alternate outline remove icon"></i>
 					</div>
 				</li>
 			`
 
     tasksList.insertAdjacentHTML("beforeend", element)
   })
+
+  document.querySelectorAll(`li i.edit`).forEach(item => {
+    item.addEventListener("click", e => {
+      e.stopPropagation()
+      showEditModal(+e.target.dataset.id)
+    })
+  })
+
+  document.querySelectorAll(`li i.trash`).forEach(item => {
+    item.addEventListener("click", e => {
+      e.stopPropagation()
+      showRemoveModal(+e.target.dataset.id)
+    })
+  })
 }
 
-// Add New Task To Local Storage
+/**
+ * Add new task to local storage
+ */
 function addTask(event) {
-  if (event.keyCode == 13) {
-    list.push({
-      id: list.length + 1,
-      text: event.target.value,
-      completed: false,
-    })
+  event.preventDefault()
 
-    localStorage.setItem("tasks", JSON.stringify(list))
-
-    new Noty({
-      text: '<i class="check icon"></i> Task was successfully added.',
-      layout: "bottomRight",
-      timeout: 2000,
-      progressBar: true,
-      closeWith: ["click"],
-      theme: "metroui",
-    }).show()
-
-    event.target.value = ""
-    showTasksList()
+  const taskText = addTaskInput.value
+  if (taskText.trim().length === 0) {
+    return (addTaskInput.value = "")
   }
+
+  list.push({
+    id: list.length + 1,
+    text: taskText,
+    completed: false,
+  })
+  localStorage.setItem("tasks", JSON.stringify(list))
+  addTaskInput.value = ""
+
+  showNotification("success", "Task was successfully added")
+  showTasksList()
 }
 
 // Change Complete State
@@ -88,46 +103,30 @@ function completeTask(id) {
   showTasksList()
 }
 
-// Remove Task
+/**
+ * Remove task
+ */
 function removeTask(id) {
-  // Change State
   list = list.filter(t => t.id !== id)
   localStorage.setItem("tasks", JSON.stringify(list))
 
-  // Show Alert And Render List
-  new Noty({
-    text: '<i class="trash icon"></i> Task was successfully deleted.',
-    type: "error",
-    layout: "bottomRight",
-    timeout: 2000,
-    progressBar: true,
-    closeWith: ["click"],
-    theme: "metroui",
-  }).show()
+  showNotification("error", "Task was successfully deleted")
   showTasksList()
 }
 
-// Edit Task
+/**
+ * Edit task
+ */
 function editTask(id) {
   const taskText = document.querySelector("#task-text").value
 
-  // Get Task
-  if (taskText == "" || taskText == null) return
+  if (taskText.trim().length === 0) return
   const taskIndex = list.findIndex(t => t.id == id)
 
-  // Change State And Save Changes
   list[taskIndex].text = taskText
   localStorage.setItem("tasks", JSON.stringify(list))
 
-  // Show Alert And Then Render List
-  new Noty({
-    text: '<i class="edit icon"></i> Task was successfully updated.',
-    layout: "bottomRight",
-    timeout: 2000,
-    progressBar: true,
-    closeWith: ["click"],
-    theme: "metroui",
-  }).show()
+  showNotification("success", "Task was successfully updated")
   showTasksList()
 }
 
@@ -177,10 +176,10 @@ function showEditModal(id) {
   const { text } = list[taskIndex]
 
   document.querySelector("#edit-modal .content #task-id").value = id
-  document.querySelector("#edit-modal .content #task-text").value = text
+  document.querySelector("#edit-modal .content #task-text").value = text.trim()
   document
     .querySelector("#update-button")
-    .setAttribute("onclick", `editTask(${id})`)
+    .addEventListener("click", () => editTask(+id))
 
   $("#edit-modal.modal").modal("show")
 }
@@ -189,7 +188,7 @@ function showEditModal(id) {
 function showRemoveModal(id) {
   document
     .querySelector("#remove-button")
-    .setAttribute("onclick", `removeTask(${id})`)
+    .addEventListener("click", () => removeTask(+id))
 
   $("#remove-modal.modal").modal("show")
 }
@@ -211,8 +210,20 @@ function showClearAllTasksModal() {
   }).show()
 }
 
+function showNotification(type, text) {
+  new Noty({
+    type,
+    text: `<i class="check icon"></i> ${text}`,
+    layout: "bottomRight",
+    timeout: 2000,
+    progressBar: true,
+    closeWith: ["click"],
+    theme: "metroui",
+  }).show()
+}
+
 // Event Listeners
-addTaskInput.addEventListener("keypress", addTask)
+addTaskForm.addEventListener("submit", addTask)
 window.addEventListener("load", () => addTaskInput.focus())
 
 showTasksList()
