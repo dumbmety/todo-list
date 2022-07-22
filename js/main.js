@@ -21,8 +21,8 @@ function showTasksList() {
 			<div class="ui icon warning message">
 				<i class="inbox icon"></i>
 				<div class="content">
-					<div class="header">You have nothing task today!</div>
-					<div>Enter your tasks today above.</div>
+					<div class="header">You have nothing task today....hazeena changess.!</div>
+					<div>Enter your tasks today above......</div>
 				</div>
 			</div>
 		`
@@ -84,7 +84,7 @@ function addTask(event) {
   localStorage.setItem("tasks", JSON.stringify(list))
   addTaskInput.value = ""
 
-  showNotification("success", "Task was successfully added")
+  showNotification("success", "Task was successfully added....ok")
   showTasksList()
 }
 
