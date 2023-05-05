@@ -129,3 +129,43 @@ body::-webkit-scrollbar-thumb {
 		width: 100%;
 	}
 }
+
+/* Dark Background */
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--dark: #fbfdff;
+		--blue: #2185d0;
+		--green: #1ebc30;
+		--red: #db2828;
+		--white: #1b1c1d;
+		--gray: #babac0;
+		--secondary: #1b1c1d;
+	}
+	body::-webkit-scrollbar-thumb {
+		background-color: var(--white);
+		border-color: var(--gray);
+	}
+	.main-header {
+		background: var(--dark);
+	}
+	#tasks-list li:hover .remove,
+	#tasks-list li:hover .edit {
+		color: var(--white);
+	}
+	.alert-warning {
+		color: #856404;
+		background-color: #1b1c1d;
+		border-color: #babac0;
+	}
+	.noty_theme__metroui.noty_bar .noty_body {
+		background: var(--dark);
+		color: var(--white);
+		box-shadow: 0 0 0 1px var(--gray) inset, 0 0 0 0 transparent;
+	}
+	.noty_theme__metroui.noty_bar.noty_type__error .noty_body {
+		background: var(--dark);
+		color: var(--white);
+		box-shadow: 0 0 0 1px var(--gray) inset, 0 0 0 0 transparent;
+	}
+}
