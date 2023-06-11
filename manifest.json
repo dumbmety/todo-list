@@ -1,0 +1,50 @@
+{
+    "short_name": "To-Do List",
+    "name": "To-Do List App",
+    "description": "Organize your work and life, finally.",
+    "categories": [
+        "todo-list",
+        "free",
+        "online"
+    ],
+    "display_override": [
+        "fullscreen",
+        "minimal-ui"
+    ],
+    "display": "standalone",
+    "lang": "en_US",
+    "dir": "auto",
+    "start_url": "/todo-list",
+    "scope": "/todo-list",
+    "icons": [
+        {
+            "src": "assets/icons/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/icons/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/icons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/icons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "background_color": "#fbfdff",
+    "theme_color": "#2185d0",
+    "screenshots": [
+        {
+            "src": "assets/icons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

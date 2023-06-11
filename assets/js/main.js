@@ -1,21 +1,33 @@
+// taking care of forEach object problem in FireFox, Internet Explorer, WaterFox
+if (typeof NodeList.prototype.forEach !== 'function') NodeList.prototype.forEach = Array.prototype.forEach;
+
 // Elements
 const tasksList = document.querySelector("#tasks-list")
 const addTaskForm = document.querySelector("form#add-task")
 const addTaskInput = document.querySelector("#add-task-input")
 const clearAllTasksBtn = document.querySelector("button#clear-all-tasks")
+const clearCompletedTasksBtn = document.querySelector("button#clear-completed-tasks")
 
 // Total List Of Tasks
-let list = JSON.parse(localStorage.getItem("tasks")) || []
+
+let list = []
+try {
+  list = JSON.parse(localStorage.getItem("tasks")) || [];
+} catch (e) {}
 
 /**
  * Show All Tasks From Local Storage In Page
  */
 function showTasksList() {
   tasksList.innerHTML = ""
-  const list = JSON.parse(localStorage.getItem("tasks")) || []
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
 
   if (list.length === 0) {
-    clearAllTasksBtn.disabled = true
+    clearAllTasksBtn.disabled = true;
+    clearCompletedTasksBtn.disabled = true;
 
     const element = String.raw`
 			<div class="ui icon warning message">
@@ -31,14 +43,20 @@ function showTasksList() {
     return tasksList.insertAdjacentHTML("beforeend", element)
   }
 
+  clearCompletedTasksBtn.disabled = !(list.filter(task => task.completed === true).length !== 0);
+
   clearAllTasksBtn.disabled = false
   tasksList.style.border = "1px solid rgba(34,36,38,.15)"
   list.reverse().forEach(task => {
+    let action = '';
+    for (let index = 0; index < 255; index++) action += (function get_random_item(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    })("1q2w3e4r5tlmknjbhvgcfxdzsa6y7u8i9o0p".split(''));
     const element = String.raw`
 				<li class="ui segment grid equal width">
 					<div class="ui checkbox column">
-						<input type="checkbox" ${task.completed ? "checked" : ""}>
-						<label>${task.text}</label>
+						<input type="checkbox" name="${action}" id="${action}" ${task.completed ? "checked" : ""}>
+						<label for="${action}">${task.text}</label>
 					</div>
 					<div class="column">
 						<i data-id="${task.id}" class="edit outline icon"></i>
@@ -47,7 +65,11 @@ function showTasksList() {
 				</li>
 			`
 
-    tasksList.insertAdjacentHTML("beforeend", element)
+    tasksList.insertAdjacentHTML("beforeend", element);
+
+    document.getElementById(action).addEventListener('change', ev => {
+      if (list.length > 0) completeTask(task.id - 1);
+    });
   })
 
   document.querySelectorAll(`li i.edit`).forEach(item => {
@@ -69,7 +91,12 @@ function showTasksList() {
  * Add new task to local storage
  */
 function addTask(event) {
-  event.preventDefault()
+  event.preventDefault();
+
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
 
   const taskText = addTaskInput.value
   if (taskText.trim().length === 0) {
@@ -84,29 +111,34 @@ function addTask(event) {
   localStorage.setItem("tasks", JSON.stringify(list))
   addTaskInput.value = ""
 
-  showNotification("success", "Task was successfully added")
+  showNotification("success", "Task was successfully added");
   showTasksList()
 }
 
 // Change Complete State
 function completeTask(id) {
-  // Get Task
-  const taskIndex = list.findIndex(t => t.id == id)
-  const task = list[taskIndex]
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
 
   // Change State
-  task.completed = !task.completed
-  list[taskIndex] = task
+  list[id]['completed'] = !list[id]['completed'];
 
-  // Save Changes
-  localStorage.setItem("tasks", JSON.stringify(list))
-  showTasksList()
+  // // Save Changes
+  localStorage.setItem("tasks", JSON.stringify(list));
+  showTasksList();
 }
 
 /**
  * Remove task
  */
 function removeTask(id) {
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
+
   list = list.filter(t => t.id !== id)
   localStorage.setItem("tasks", JSON.stringify(list))
 
@@ -118,6 +150,11 @@ function removeTask(id) {
  * Edit task
  */
 function editTask(id) {
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
+
   const taskText = document.querySelector("#task-text").value
 
   if (taskText.trim().length === 0) return
@@ -132,6 +169,11 @@ function editTask(id) {
 
 // Clear All Tasks
 function clearAllTasks() {
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
+
   if (list.length > 0) {
     list = []
     localStorage.setItem("tasks", JSON.stringify(list))
@@ -151,6 +193,11 @@ function clearAllTasks() {
 
 // Clear Complete Tasks
 function clearCompleteTasks() {
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
+
   if (list.length > 0) {
     if (confirm("Are you sure?")) {
       const filteredTasks = list.filter(t => t.completed !== true)
@@ -172,6 +219,11 @@ function clearCompleteTasks() {
 
 // Show Edit Modal And Pass Data
 function showEditModal(id) {
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
+
   const taskIndex = list.findIndex(t => t.id == id)
   const { text } = list[taskIndex]
 
@@ -195,6 +247,11 @@ function showRemoveModal(id) {
 
 // Show Clear All Tasks Modal
 function showClearAllTasksModal() {
+  let list = []
+  try {
+    list = JSON.parse(localStorage.getItem("tasks")) || [];
+  } catch (e) {}
+
   if (list.length > 0) {
     return $("#clear-all-tasks-modal.modal").modal("show")
   }
@@ -224,6 +281,6 @@ function showNotification(type, text) {
 
 // Event Listeners
 addTaskForm.addEventListener("submit", addTask)
-window.addEventListener("load", () => addTaskInput.focus())
-
-showTasksList()
+window.addEventListener("DOMContentLoaded", () => addTaskInput.focus())
+window.addEventListener('storage', showTasksList);
+showTasksList();

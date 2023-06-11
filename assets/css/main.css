@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap');
+
 /* Variables */
 :root {
 	--dark: #1b1c1d;
@@ -11,15 +15,22 @@
 
 /* Default Settings */
 * {
-	padding: 0;
 	margin: 0;
+	padding: 0;
 	box-sizing: border-box;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 body {
 	color: var(--dark);
 	background: var(--secondary);
 	font-family: 'Lato', sans-serif;
+	overflow: hidden auto;
+	min-height: 100vh;
 }
+
 .ui.grid + .grid {
 	margin-top: 0;
 }
@@ -61,6 +72,7 @@ body::-webkit-scrollbar-thumb {
 	width: 70%;
 	margin: 0 auto;
 	margin-bottom: 3rem;
+	grid-gap: 10px;
 }
 
 /* Tasks List */
@@ -86,6 +98,11 @@ body::-webkit-scrollbar-thumb {
 }
 #tasks-list li i {
 	cursor: pointer !important;
+}
+#tasks-list input[type='checkbox'] + label {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 /* Alert */
