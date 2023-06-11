@@ -6,11 +6,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Links -->
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
@@ -23,7 +20,7 @@
       integrity="sha512-NXUhxhkDgZYOMjaIgd89zF2w51Mub53Ru3zCNp5LTlEzMbNNAjTjDbpURYGS5Mop2cU4b7re1nOIucsVlrx9fA=="
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
   </head>
   <body>
     <!-- Main Header -->
@@ -41,6 +38,8 @@
           id="add-task-input"
           class="large"
           type="text"
+          maxlength="255"
+          autocomplete="off"
           placeholder="Write your task here..."
         />
         <i class="tasks icon"></i>
@@ -58,8 +57,9 @@
         </button>
         <button
           disabled
+          id="clear-completed-tasks"
           class="ui button column"
-          onclick="showClearCompletedTasksModal()"
+          onclick="clearCompleteTasks()"
         >
           Clear completed tasks
         </button>
@@ -154,6 +154,7 @@
       </div>
       <!-- End Clear Completed Tasks Modal -->
     </div>
+    <br>
 
     <!-- Scripts -->
     <script
@@ -175,6 +176,6 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
-    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="assets/js/main.js"></script>
   </body>
 </html>
